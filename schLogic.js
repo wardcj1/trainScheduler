@@ -128,12 +128,3 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey) {
      }
 
      setTimeout(refresh, 10000);
-
-
-
-
- // Assumptions
-    var tFrequency = 3;
-
-    // Time is 3:30 AM
-    var firstTime = "03:30";
