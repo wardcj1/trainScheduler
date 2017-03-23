@@ -75,9 +75,33 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey) {
   // Prettify the train start
   var trainStartPretty = moment.unix(trainStart).format("HH:mm");
 
+    // First Time (pushed back 1 year to make sure it comes before current time)
+    var firstTimeConverted = moment(trainStart, "HH:mm").subtract(1, "years");
+    console.log(firstTimeConverted);
+
   // Current Time:
   var currentTime = moment().format("HH:mm");
   $("#current-time").html("The current time is " + currentTime);
+     console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+
+    // Difference between the times
+    var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+    console.log("DIFFERENCE IN TIME: " + diffTime);
+
+    // Time apart (remainder)
+    var tRemainder = diffTime % tFrequency;
+    console.log(tRemainder);
+
+    // Minute Until Train
+    var tMinutesTillTrain = tFrequency - tRemainder;
+    console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+    // Next Train
+    var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+    console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+    var nextTrainConverted = moment(nextTrain).format("hh:mm a");
+
 
   // Calculates the minutes away
   var trainMinutes = moment().diff(moment.unix(trainStart, "X"), "mm");
@@ -86,7 +110,9 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey) {
   // console.log(trainMinutes);    
  
   // Add each train's data into the table
-  $("#train-table > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" + trainRate + "</td><td>" + trainStartPretty + "</td><td>" + trainMinutes + "</td></tr>");
+  $("#train-table > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" + trainRate + "</td><td>" + nextTrainConverted + "</td><td>" + trainMinutes + "</td></tr>");
+
+
 });
 
      var time = new Date().getTime();
@@ -102,3 +128,12 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey) {
      }
 
      setTimeout(refresh, 10000);
+
+
+
+
+ // Assumptions
+    var tFrequency = 3;
+
+    // Time is 3:30 AM
+    var firstTime = "03:30";
